@@ -1,5 +1,12 @@
 Revision history for Perl module Devel::Leak::Object
 
+0.90 Wed 29 Aug 2007
+    - Taken over maintenance and rewritten from scratch, using Scalar::Util
+    - Now supports all types of objects, including IO and REF
+    - Supports classes which overload stringification.
+    - Support a couple more evil corner cases relating to SUPER::DESTROY
+    - Accelerated and cached the DESTROY-time search for the DESTROY super-method
+
 0.02 Tue Sep 21  2004
 	- Remove call to Hook::LexWrap as this is not what is needed in
 	this module. Do own wrapping.
