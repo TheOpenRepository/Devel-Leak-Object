@@ -9,7 +9,7 @@ use Scalar::Util ();
 use vars qw{ $VERSION @ISA @EXPORT_OK };
 use vars qw{ %OBJECT_COUNT %TRACKED %DESTROY_ORIGINAL %DESTROY_STUBBED %DESTROY_NEXT };
 BEGIN {
-	$VERSION     = '0.03';
+	$VERSION     = '0.90';
 
     # Set up exports
 	require Exporter;

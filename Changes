@@ -1,6 +1,7 @@
 Revision history for Perl module Devel::Leak::Object
 
 0.90 Wed 29 Aug 2007
+    - MAJOR RELEASE: NOW WITH 38% ALL NEW EVIL!!!
     - Taken over maintenance and rewritten from scratch, using Scalar::Util
     - Now supports all types of objects, including IO and REF
     - Supports classes which overload stringification.
