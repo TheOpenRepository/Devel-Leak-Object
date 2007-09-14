@@ -9,7 +9,7 @@ use Scalar::Util ();
 use vars qw{ $VERSION @ISA @EXPORT_OK };
 use vars qw{ %OBJECT_COUNT %TRACKED %DESTROY_ORIGINAL %DESTROY_STUBBED %DESTROY_NEXT };
 BEGIN {
-	$VERSION     = '0.90';
+	$VERSION     = '0.91';
 
     # Set up exports
 	require Exporter;
@@ -74,7 +74,8 @@ sub track {
         }
         $DESTROY_STUBBED{$class} = 1;
         eval <<"END_DESTROY";
-package $class;
+package $class;\
+no warnings;
 sub DESTROY {
     my \$class   = Scalar::Util::blessed(\$_[0]);
     my \$address = Scalar::Util::refaddr(\$_[0]);
