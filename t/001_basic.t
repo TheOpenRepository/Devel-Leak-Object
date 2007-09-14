@@ -24,4 +24,4 @@ is ($Devel::Leak::Object::OBJECT_COUNT{$class},1,'# objects ($buzz)');
 
 undef $buzz;
 is ($Devel::Leak::Object::OBJECT_COUNT{$class},0,'no objects left');
-is (scalar(keys %Devel::Leak::Object::tracked), 0, 'Nothing still tracked');
+is (scalar(keys %Devel::Leak::Object::TRACKED), 0, 'Nothing still tracked');
