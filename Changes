@@ -1,6 +1,7 @@
 Revision history for Perl module Devel::Leak::Object
 
 0.93 XXX XX XXX 2009
+	- Optionally track where leaked objects come from
         - Fix dumping to STDERR at END (previously dumped to STDOUT)
 	- tests for that
 
