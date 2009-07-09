@@ -9,7 +9,7 @@ use Scalar::Util ();
 use vars qw{ $VERSION @ISA @EXPORT_OK };
 use vars qw{ %OBJECT_COUNT %TRACKED %DESTROY_ORIGINAL %DESTROY_STUBBED %DESTROY_NEXT };
 BEGIN {
-	$VERSION     = '0.92';
+	$VERSION     = '0.93';
 
     # Set up exports
 	require Exporter;
@@ -178,10 +178,10 @@ sub make_next {
 }
 
 sub status {
-	print "Tracked objects by class:\n";
+	print STDERR "Tracked objects by class:\n";
 	for (sort keys %OBJECT_COUNT) {
         next unless $OBJECT_COUNT{$_}; # Don't list class with count zero
-		printf "%-40s %d\n", $_, $OBJECT_COUNT{$_};
+		printf STDERR "%-40s %d\n", $_, $OBJECT_COUNT{$_};
 	}
 }
 
@@ -215,7 +215,7 @@ leaks due to circular references or innappropriate caching schemes.
 
 Object tracking can be enabled on a per object basis. Any objects
 thus tracked are remembered until DESTROYed; details of any objects
-left are printed out to stderr at END-time.
+left are printed out to STDERR at END-time.
 
   use Devel::Leak::Object qw(GLOBAL_bless);
 
@@ -237,6 +237,8 @@ Please report bugs to http://rt.cpan.org
 =head1 AUTHOR
 
 Adam Kennedy <adamk@cpan.org>
+
+With some additional contributions from David Cantrell E<lt>david@cantrell.org.ukE<gt>
 
 =head1 SEE ALSO
 
