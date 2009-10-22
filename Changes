@@ -1,9 +1,11 @@
-Revision history for Perl module Devel::Leak::Object
+Revision history for Perl module Devel-Leak-Object
 
-0.93 XXX XX XXX 2009
+1.00 Thu 22 Oct 2009
+	- Upgrading to Module::Install::DSL 0.91
+	- Switching to a prod version (finally)
 	- Optionally track where leaked objects come from
-        - Fix dumping to STDERR at END (previously dumped to STDOUT)
-	- tests for that
+	- Fix dumping to STDERR at END (previously dumped to STDOUT)
+	- Tests for that
 
 0.92 Tue 11 Dec 2007
 	- Updating to Module::Install 0.68
