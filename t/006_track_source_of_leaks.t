@@ -23,7 +23,7 @@ FOO
 system(qq{ $^X -Mblib t/tracksource2.pl 2> $temp });
 open(FILE, $temp) || die("Can't read $temp\n");
 undef $/;
-my $data = <FILE>;
+$data = <FILE>;
 close(FILE);
 is_deeply($data,
 q{Tracked objects by class:
