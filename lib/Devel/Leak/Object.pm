@@ -269,7 +269,7 @@ L<Devel::Leak>
 
 =head1 COPYRIGHT
 
-Copyright 2007 Adam Kennedy.
+Copyright 2007 - 2009 Adam Kennedy.
 
 Rewritten from original copyright 2004 Ivor Williams.
 
