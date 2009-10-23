@@ -17,7 +17,7 @@ FOO                                      1
 
 Sources of leaks:
 FOO
-  line: 00008   t/tracksource.pl
+     1 from t/tracksource.pl line: 8
 }, "can track a single leak to its source");
 
 system(qq{ $^X -Mblib t/tracksource2.pl 2> $temp });
@@ -33,13 +33,11 @@ LOOPYFOO                                 3
 
 Sources of leaks:
 Devel::Leak::Object::Tests::tracksource
-  line: 00005   t/tracksource.pm
+     1 from t/tracksource.pm line: 5
 FOO
-  line: 00010   t/tracksource2.pl
-  line: 00012   t/tracksource2.pl
+     1 from t/tracksource2.pl line: 10
+     1 from t/tracksource2.pl line: 12
 LOOPYFOO
-  line: 00017   t/tracksource2.pl
-  line: 00017   t/tracksource2.pl
-  line: 00017   t/tracksource2.pl
+     3 from t/tracksource2.pl line: 17
 },
 "can track multiple leak sources in multiple files");

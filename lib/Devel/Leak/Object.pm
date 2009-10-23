@@ -7,9 +7,9 @@ use Carp         ();
 use Scalar::Util ();
 
 use vars qw{ $VERSION @ISA @EXPORT_OK };
-use vars qw{ %OBJECT_COUNT %TRACKED %DESTROY_ORIGINAL %DESTROY_STUBBED %DESTROY_NEXT };
+use vars qw{ %OBJECT_COUNT %TRACKED %DESTROY_ORIGINAL %DESTROY_STUBBED %DESTROY_NEXT %IGNORE_CLASS };
 BEGIN {
-	$VERSION     = '1.00';
+	$VERSION     = '1.01';
 
     # Set up exports
 	require Exporter;
@@ -21,6 +21,8 @@ BEGIN {
     %TRACKED          = ();
     %DESTROY_ORIGINAL = ();
     %DESTROY_STUBBED  = ();
+    %DESTROY_NEXT     = ();
+    %IGNORE_CLASS     = ();
 }
 
 sub import {
@@ -52,9 +54,10 @@ sub track {
     unless ( defined $class ) {
         Carp::carp("Devel::Leak::Object::track was passed a non-object");
     }
+    return if (defined($IGNORE_CLASS{$class}));
     my $address = Scalar::Util::refaddr($object);
     if ( $TRACKED{$address} ) {
-	$TRACKED{$address}->{class} ||= ''; # avoid warnings about uninitialised strings
+	    $TRACKED{$address}->{class} ||= ''; # avoid warnings about uninitialised strings
         if ( $class eq $TRACKED{$address}->{class} ) {
             # Reblessing into the same class, ignore
             return $OBJECT_COUNT{$class};
@@ -81,6 +84,10 @@ no warnings;
 sub DESTROY {
     my \$class   = Scalar::Util::blessed(\$_[0]);
     my \$address = Scalar::Util::refaddr(\$_[0]);
+    unless ( defined \$class ) {
+        Carp::carp("Unexpected error: First param to DESTROY is no an object");
+        return;
+    }
     unless ( defined \$class ) {
         die "Unexpected error: First param to DESTROY is no an object";
     }
@@ -120,8 +127,9 @@ sub DESTROY {
         Devel::Leak::Object::make_next(\$original);
     }
     my \$super = \$Devel::Leak::Object::DESTROY_NEXT{\$original}->{'$class'};
-    unless ( defined \$super ) {
-        die "Failed to find super-method for class \$class in package $class";
+    unless (( defined \$super ) or (defined(\$Devel::Leak::Object::IGNORE_CLASS{\$class}))) {
+        warn "Failed to find super-method for class \$class in package $class";
+        \$Devel::Leak::Object::IGNORE_CLASS{\$class} = 1;
     }
     if ( \$super ) {
         goto \&{\$super.'::DESTROY'};
@@ -187,15 +195,19 @@ sub status {
 	}
 	if($Devel::Leak::Object::TRACKSOURCELINES) {
 	    print STDERR "\nSources of leaks:\n";
-	    my $prevclass = '';
-	    foreach my $obj (sort {
-	        $a->{class} cmp $b->{class} || # sort by class ...
-	        $a->{file}  cmp $b->{file}  || # ... then by file ...
-	        $a->{line}  cmp $b->{line}     # ... then by line number
-            } values(%TRACKED)) {
-	        printf STDERR "%s\n", $obj->{class} if($prevclass ne $obj->{class});
-	        printf STDERR "  line: %05d   %s\n", map { $obj->{$_} } qw(line file);
-		$prevclass = $obj->{class}
+	    my %classes = ();
+	    foreach my $obj (values(%TRACKED)) {
+	        #TODO: no, I don't know why there are some undefined
+	        next unless defined($obj->{class});
+	        $classes{$obj->{class}} ||= {};
+	        $classes{$obj->{class}}->{$obj->{file}.' line: '.$obj->{line}}++;
+	    }
+	    foreach my $class (sort keys(%classes)) {
+	        printf STDERR "%s\n", $class;
+	        my %lines = %{$classes{$class}};
+	        foreach my $line (sort keys(%lines)) {
+       	        printf STDERR "%6d from %s\n", $lines{$line}, $line;
+	        }
 	    }
 	}
 }
