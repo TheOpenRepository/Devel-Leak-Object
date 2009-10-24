@@ -33,7 +33,7 @@ LOOPYFOO                                 3
 
 Sources of leaks:
 Devel::Leak::Object::Tests::tracksource
-     1 from t/tracksource.pm line: 5
+     1 from t/tracksource2.pl line: 14
 FOO
      1 from t/tracksource2.pl line: 10
      1 from t/tracksource2.pl line: 12

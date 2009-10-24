@@ -68,8 +68,17 @@ sub track {
     }
 
     # Set or over-write the class name for the tracked object
-    (undef, my $srcfile, my $srcline) = caller(1);
-    $TRACKED{$address} = { class => $class, file => $srcfile, line => $srcline };
+    my ($package, $srcfile, $srcline, $subroutine) = caller(1);
+    $package ||= '';
+    $subroutine ||= '';
+    #don't just tell us that we called it from our own new..
+	if ($package eq $class) {
+	    my ($next_package, $next_srcfile, $next_srcline, $next_subroutine) = caller(2);
+	    if ($next_subroutine eq $class.'::new') {
+	    	($package, $srcfile, $srcline, $subroutine) = ($next_package, $next_srcfile, $next_srcline, $next_subroutine);
+	    }
+	}
+    $TRACKED{$address} = { class => $class, file => $srcfile, line => $srcline, package=>$package, subroutine=>$subroutine };
 
     # If needed, initialise the new class
     unless ( $DESTROY_STUBBED{$class} ) {
@@ -200,7 +209,8 @@ sub status {
 	        #TODO: no, I don't know why there are some undefined
 	        next unless defined($obj->{class});
 	        $classes{$obj->{class}} ||= {};
-	        $classes{$obj->{class}}->{$obj->{file}.' line: '.$obj->{line}}++;
+	        my $line = $obj->{file}.' line: '.$obj->{line}; #.' ('.$obj->{package}.' -> '.$obj->{subroutine}.')';
+	        $classes{$obj->{class}}->{$line}++;
 	    }
 	    foreach my $class (sort keys(%classes)) {
 	        printf STDERR "%s\n", $class;
@@ -263,7 +273,7 @@ not be impacted.
 
 Setting the global variable $Devel::Leak::Object::TRACKSOURCELINES makes the
 report at the end include where (filename and line number) each leaked object
-originates.
+originates (or where call to the ::new is made).
 
 =head1 BUGS
 
@@ -274,6 +284,7 @@ Please report bugs to http://rt.cpan.org
 Adam Kennedy <adamk@cpan.org>
 
 With some additional contributions from David Cantrell E<lt>david@cantrell.org.ukE<gt>
+and Sven Dowideit <svendowideit@home.org.au>
 
 =head1 SEE ALSO
 
