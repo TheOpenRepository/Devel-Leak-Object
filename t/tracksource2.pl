@@ -14,6 +14,7 @@ $bar->{foo}=$bar;
 my $baz = Devel::Leak::Object::Tests::tracksource->new();
 
 for (1..3) {
+    Devel::Leak::Object::checkpoint();
     my $foo = bless({}, 'LOOPYFOO');
     $foo->{foo} = $foo;
 }

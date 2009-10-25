@@ -4,6 +4,7 @@ Revision history for Perl module Devel-Leak-Object
 	- warn rather than die for objects that don't conform to our assumptions
 	- list tracked source line only once
 	- list the next caller in the stack if bless is called by the class's new()
+	- add a checkpoint() status which lists new classes created (and not destroyed) since the last call to checkpoint()
 
 1.00 Thu 22 Oct 2009
 	- Upgrading to Module::Install::DSL 0.91

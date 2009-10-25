@@ -7,17 +7,18 @@ use Carp         ();
 use Scalar::Util ();
 
 use vars qw{ $VERSION @ISA @EXPORT_OK };
-use vars qw{ %OBJECT_COUNT %TRACKED %DESTROY_ORIGINAL %DESTROY_STUBBED %DESTROY_NEXT %IGNORE_CLASS };
+use vars qw{ %OBJECT_COUNT %TRACKED %DESTROY_ORIGINAL %DESTROY_STUBBED %DESTROY_NEXT %IGNORE_CLASS %OBJECT_COUNT_CHECKPOINT };
 BEGIN {
 	$VERSION     = '1.01';
 
     # Set up exports
 	require Exporter;
 	@ISA         = qw(Exporter);
-	@EXPORT_OK   = qw(track bless status);
+	@EXPORT_OK   = qw(track bless status checkpoint);
 
     # Set up state storage (primary for clarity)
     %OBJECT_COUNT     = ();
+    %OBJECT_COUNT_CHECKPOINT     = ();
     %TRACKED          = ();
     %DESTROY_ORIGINAL = ();
     %DESTROY_STUBBED  = ();
@@ -196,11 +197,26 @@ sub make_next {
         return 1;
 }
 
+sub checkpoint {
+	my $first;
+	for (sort keys %OBJECT_COUNT) {
+	    next unless $OBJECT_COUNT{$_}; # Don't list class with count zero
+	    $OBJECT_COUNT_CHECKPOINT{$_} ||= 0;
+	    next unless ($OBJECT_COUNT{$_} > $OBJECT_COUNT_CHECKPOINT{$_});
+	    
+	    print STDERR "checkpoint:\n" unless ($first++);;
+		printf STDERR "\t%-40s %d\n", $_, $OBJECT_COUNT{$_}-$OBJECT_COUNT_CHECKPOINT{$_};
+		
+		$OBJECT_COUNT_CHECKPOINT{$_} = $OBJECT_COUNT{$_};
+	}
+}
+
 sub status {
 	print STDERR "Tracked objects by class:\n";
 	for (sort keys %OBJECT_COUNT) {
+		next if ($_ eq '');	#Don't know what these are..
         next unless $OBJECT_COUNT{$_}; # Don't list class with count zero
-		printf STDERR "%-40s %d\n", $_, $OBJECT_COUNT{$_};
+		printf STDERR "\t%-40s %d\n", $_, $OBJECT_COUNT{$_};
 	}
 	if($Devel::Leak::Object::TRACKSOURCELINES) {
 	    print STDERR "\nSources of leaks:\n";

@@ -13,6 +13,6 @@ open(FILE, $temp) || die("Can't read $temp\n");
 my $preamble = <FILE>;
 chomp(my $data = <FILE>);
 
-my($class, $count) = split(/\s+/, $data);
+my($tab, $class, $count) = split(/\s+/, $data);
 ok($class eq 'FOO' && $count == 1, "Dump to STDERR at END works");
 

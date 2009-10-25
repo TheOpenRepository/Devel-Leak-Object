@@ -13,7 +13,7 @@ undef $/;
 my $data = <FILE>;
 close(FILE);
 is_deeply($data, q{Tracked objects by class:
-FOO                                      1
+	FOO                                      1
 
 Sources of leaks:
 FOO
@@ -26,10 +26,17 @@ undef $/;
 $data = <FILE>;
 close(FILE);
 is_deeply($data,
-q{Tracked objects by class:
-Devel::Leak::Object::Tests::tracksource  1
-FOO                                      2
-LOOPYFOO                                 3
+q{checkpoint:
+	Devel::Leak::Object::Tests::tracksource  1
+	FOO                                      2
+checkpoint:
+	LOOPYFOO                                 1
+checkpoint:
+	LOOPYFOO                                 1
+Tracked objects by class:
+	Devel::Leak::Object::Tests::tracksource  1
+	FOO                                      2
+	LOOPYFOO                                 3
 
 Sources of leaks:
 Devel::Leak::Object::Tests::tracksource
@@ -38,6 +45,6 @@ FOO
      1 from t/tracksource2.pl line: 10
      1 from t/tracksource2.pl line: 12
 LOOPYFOO
-     3 from t/tracksource2.pl line: 17
+     3 from t/tracksource2.pl line: 18
 },
 "can track multiple leak sources in multiple files");
