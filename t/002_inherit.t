@@ -6,9 +6,9 @@ use Test::More tests => 18;
 package A;
 
 sub new {
-    my ($pkg,$par) = @_;
+	my ($pkg,$par) = @_;
 
-    bless {name => $par, constructor => 'A'},$pkg;
+	bless {name => $par, constructor => 'A'},$pkg;
 }
 
 package Blah;	# B conflicts with the builtin B::
@@ -18,18 +18,18 @@ package E;
 use strict;
 
 sub new {
-    my ($pkg,$par) = @_;
+	my ($pkg,$par) = @_;
 
-    bless {name => $par, constructor => 'E'},$pkg;
+	bless {name => $par, constructor => 'E'},$pkg;
 }
 
 use vars qw{$msg};
 $msg = '';
 
 sub DESTROY {
-    my $self = shift;
+	my $self = shift;
 
-    $msg = "E::DESTROY called for ".$self->{name};
+	$msg = "E::DESTROY called for ".$self->{name};
 }
 
 package D;
@@ -44,7 +44,7 @@ use strict;
 
 #01
 BEGIN {
-    use_ok( 'Devel::Leak::Object' );
+	use_ok( 'Devel::Leak::Object' );
 }
 
 my $foo = C->new('foo');

@@ -6,7 +6,7 @@ use Test::More tests => 7;
 my $class = 'Foo::Bar';
 
 BEGIN {
-    use_ok( 'Devel::Leak::Object' );
+	use_ok( 'Devel::Leak::Object' );
 }
 
 my $foo = bless {}, $class;

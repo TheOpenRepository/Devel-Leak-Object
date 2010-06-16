@@ -1,4 +1,4 @@
-use inc::Module::Install::DSL 0.91;
+use inc::Module::Install::DSL 0.99;
 
 all_from      lib/Devel/Leak/Object.pm
 requires      Scalar::Util 1.19

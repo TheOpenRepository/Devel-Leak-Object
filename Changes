@@ -1,6 +1,7 @@
 Revision history for Perl module Devel-Leak-Object
 
-1.01 Fri 23 Oct 2009
+1.01 Wed 16 Jun 2010
+	- Upgraded to Module::Install::DSL 0.99
 	- warn rather than die for objects that don't conform to our assumptions
 	- list tracked source line only once
 	- list the next caller in the stack if bless is called by the class's new()
